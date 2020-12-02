@@ -162,22 +162,26 @@ HCURSOR CStartGameDlg::OnQueryDragIcon()
 void CStartGameDlg::OnBnClickedButton1()
 {
 	// TODO: 在此添加控件通知处理程序代码 普通启动
+	mMyStart.BtnClick(proStart);
 }
 
 
 void CStartGameDlg::OnBnClickedButton2()
 {
 	// TODO: 在此添加控件通知处理程序代码 注入启动
+	mMyStart.BtnClick(dllStart);
 }
 
 
 void CStartGameDlg::OnBnClickedButton3()
 {
 	// TODO: 在此添加控件通知处理程序代码 退出程序
+	mMyStart.BtnClick(proExit);
 }
 
 
 void CStartGameDlg::OnBnClickedButton4()
 {
 	// TODO: 在此添加控件通知处理程序代码 注入卸载
+	mMyStart.BtnClick(dllExit);
 }
