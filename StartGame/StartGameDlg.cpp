@@ -65,6 +65,10 @@ BEGIN_MESSAGE_MAP(CStartGameDlg, CDialogEx)
 	ON_WM_SYSCOMMAND()
 	ON_WM_PAINT()
 	ON_WM_QUERYDRAGICON()
+	ON_BN_CLICKED(IDC_BUTTON1, &CStartGameDlg::OnBnClickedButton1)
+	ON_BN_CLICKED(IDC_BUTTON2, &CStartGameDlg::OnBnClickedButton2)
+	ON_BN_CLICKED(IDC_BUTTON3, &CStartGameDlg::OnBnClickedButton3)
+	ON_BN_CLICKED(IDC_BUTTON4, &CStartGameDlg::OnBnClickedButton4)
 END_MESSAGE_MAP()
 
 
@@ -153,3 +157,27 @@ HCURSOR CStartGameDlg::OnQueryDragIcon()
 	return static_cast<HCURSOR>(m_hIcon);
 }
 
+
+
+void CStartGameDlg::OnBnClickedButton1()
+{
+	// TODO: 在此添加控件通知处理程序代码 普通启动
+}
+
+
+void CStartGameDlg::OnBnClickedButton2()
+{
+	// TODO: 在此添加控件通知处理程序代码 注入启动
+}
+
+
+void CStartGameDlg::OnBnClickedButton3()
+{
+	// TODO: 在此添加控件通知处理程序代码 退出程序
+}
+
+
+void CStartGameDlg::OnBnClickedButton4()
+{
+	// TODO: 在此添加控件通知处理程序代码 注入卸载
+}

@@ -9,6 +9,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "StartGame", "StartGame\Star
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Dll_Protect", "Dll_Protect\Dll_Protect.vcxproj", "{97B3F461-1A75-4026-A237-CA8D84A5E2CD}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DLL_Game", "DLL_Game\DLL_Game.vcxproj", "{F635B773-FE05-45DA-AB34-2B51B3240F28}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -41,6 +43,14 @@ Global
 		{97B3F461-1A75-4026-A237-CA8D84A5E2CD}.Release|x64.Build.0 = Release|x64
 		{97B3F461-1A75-4026-A237-CA8D84A5E2CD}.Release|x86.ActiveCfg = Release|Win32
 		{97B3F461-1A75-4026-A237-CA8D84A5E2CD}.Release|x86.Build.0 = Release|Win32
+		{F635B773-FE05-45DA-AB34-2B51B3240F28}.Debug|x64.ActiveCfg = Debug|x64
+		{F635B773-FE05-45DA-AB34-2B51B3240F28}.Debug|x64.Build.0 = Debug|x64
+		{F635B773-FE05-45DA-AB34-2B51B3240F28}.Debug|x86.ActiveCfg = Debug|Win32
+		{F635B773-FE05-45DA-AB34-2B51B3240F28}.Debug|x86.Build.0 = Debug|Win32
+		{F635B773-FE05-45DA-AB34-2B51B3240F28}.Release|x64.ActiveCfg = Release|x64
+		{F635B773-FE05-45DA-AB34-2B51B3240F28}.Release|x64.Build.0 = Release|x64
+		{F635B773-FE05-45DA-AB34-2B51B3240F28}.Release|x86.ActiveCfg = Release|Win32
+		{F635B773-FE05-45DA-AB34-2B51B3240F28}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
