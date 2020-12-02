@@ -7,6 +7,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "2012_QQMahjong", "2012_QQMa
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "StartGame", "StartGame\StartGame.vcxproj", "{DDDB9595-3918-4826-B87C-8FA6FDA7CB62}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Dll_Protect", "Dll_Protect\Dll_Protect.vcxproj", "{97B3F461-1A75-4026-A237-CA8D84A5E2CD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -31,6 +33,14 @@ Global
 		{DDDB9595-3918-4826-B87C-8FA6FDA7CB62}.Release|x64.Build.0 = Release|x64
 		{DDDB9595-3918-4826-B87C-8FA6FDA7CB62}.Release|x86.ActiveCfg = Release|Win32
 		{DDDB9595-3918-4826-B87C-8FA6FDA7CB62}.Release|x86.Build.0 = Release|Win32
+		{97B3F461-1A75-4026-A237-CA8D84A5E2CD}.Debug|x64.ActiveCfg = Debug|x64
+		{97B3F461-1A75-4026-A237-CA8D84A5E2CD}.Debug|x64.Build.0 = Debug|x64
+		{97B3F461-1A75-4026-A237-CA8D84A5E2CD}.Debug|x86.ActiveCfg = Debug|Win32
+		{97B3F461-1A75-4026-A237-CA8D84A5E2CD}.Debug|x86.Build.0 = Debug|Win32
+		{97B3F461-1A75-4026-A237-CA8D84A5E2CD}.Release|x64.ActiveCfg = Release|x64
+		{97B3F461-1A75-4026-A237-CA8D84A5E2CD}.Release|x64.Build.0 = Release|x64
+		{97B3F461-1A75-4026-A237-CA8D84A5E2CD}.Release|x86.ActiveCfg = Release|Win32
+		{97B3F461-1A75-4026-A237-CA8D84A5E2CD}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
