@@ -67,7 +67,9 @@ int CMyStart::BtnClick(int index)
 	}
 	else if (index == mouseMsg)
 	{
+		AttachThreadInput(GetCurrentThreadId(), this->_INFO.TID, TRUE);
 		_Game->MousePost(this->_INFO.wMain, 666, 528);
+		AttachThreadInput(GetCurrentThreadId(), this->_INFO.TID, FALSE);
 	}
 	return 0;
 }

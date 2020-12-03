@@ -115,8 +115,8 @@ BOOL CGame::MousePost(HWND hWnd, DWORD x, DWORD y)
 	{
 		y = x + y * 65536;
 		PostMessageA(hWnd, 513, 1, y);
-		PostMessageA(hWnd, 513, 1, y);
 		PostMessageA(hWnd, 514, 0, y);
+		PostMessageA(hWnd, 515, 0, y);
 	}
 	return 0;
 }
