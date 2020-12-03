@@ -8,7 +8,7 @@
 #endif
 
 #include "resource.h"		// 主符号
-
+#include "CGame.h"
 
 // CDLLGameApp
 // 有关此类实现的信息，请参阅 DLL_Game.cpp
