@@ -59,7 +59,6 @@ CDLLGameApp theApp;
 BOOL CDLLGameApp::InitInstance()
 {
 	CWinApp::InitInstance();
-	//TRACE(_T("App handle is 0x%0X\n"), AfxGetInstanceHandle());
-	g_CGame.InitDLL(AfxGetInstanceHandle());
+
 	return TRUE;
 }

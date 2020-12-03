@@ -2,7 +2,15 @@
 #include <iostream>
 
 
-class _declspec(dllexport) CProtect
+#ifdef API_TEST_EXPORTS
+#define TEST_API __declspec(dllexport)
+#else
+#define TEST_API __declspec(dllimport)
+#endif
+
+
+
+class TEST_API CProtect
 {
 public:
 	int EnumModule();
