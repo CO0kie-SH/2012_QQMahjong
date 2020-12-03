@@ -58,54 +58,47 @@ HWND CGame::CheckGame(DWORD TID, DWORD PID, DWORD TimeOut /*= 1000*/)
 	ULONGLONG oldTime = GetTickCount64(), newTime;
 	WCHAR buff[MAX_PATH];
 	HWND hwndRet = NULL, hwndWindow = NULL;
-	DWORD dwPid;
-	//CStringW str;
+	DWORD dwPid = NULL, dwTheardID = NULL;
+	CStringW str;
 
-	if (TimeOut) Sleep(55);
+	if (TimeOut)
+		Sleep(55);
 
 	do {
 		if (TimeOut) Sleep(15);
 		newTime = GetTickCount64();
 		if (0 == (hwndWindow = ::GetTopWindow(0)))
-			break;
+			return FALSE;
+
 		do
 		{
 			// 通过窗口句柄取得进程ID
-			DWORD dwTheardID = ::GetWindowThreadProcessId(hwndWindow, &dwPid);
-			if (dwTheardID == TID || dwPid == PID)
+			dwTheardID = ::GetWindowThreadProcessId(hwndWindow, &dwPid);
+			if (dwTheardID == TID && dwPid == PID)
 			{
 				GetClassNameW(hwndWindow, buff, MAX_PATH);
-				if (wcscmp(buff, L"#32770"))
-					break;
-				//str.Format(L"TID %lu==%lu\tPID %lu==%lu\t%lu\t%s\t",
-				//	TID, dwTheardID, PID, dwPid, (DWORD)hwndWindow, buff);
+				str.Format(L"句柄 %d\tTID %d==%d,PID %d==%d %s\t",
+					(int)hwndWindow, TID, dwTheardID, PID, dwPid, buff);
 				GetWindowTextW(hwndWindow, buff, MAX_PATH);
+				str.AppendFormat(L"%s\n", buff);
+				OutputDebugStringW(str);
 
-				//判断错误窗口
+
 				if (wcscmp(buff, L"程序错误") == 0)
 					return FALSE;
-
-				//打印信息
-				//str.AppendFormat(L"%s\n", buff);
-				//OutputDebugStringW(str);
-				hwndRet = hwndWindow;
+				if (wcscmp(buff, L"QQ连连看") == 0)
+					hwndRet = hwndWindow;
+				HWND tmp = ::GetNextWindow(hwndWindow, GW_HWNDNEXT);
+				GetWindowTextW(tmp, buff, MAX_PATH);
+				if (wcscmp(buff, L"QQ连连看") == 0)
+					hwndRet = tmp;
 			}
 			// 取得下一个窗口句柄
 		} while (hwndWindow = ::GetNextWindow(hwndWindow, GW_HWNDNEXT));
 	} while (newTime - oldTime < TimeOut);
 	
 	//获得的不一定是顶层窗口，向上查找一下
-	if (hwndRet > 0)
-		return hwndRet;
-	else if (hwndWindow > 0)
-	{
-		while (HWND tmp = ::GetParent(hwndWindow))
-		{
-			hwndWindow = tmp;
-		}
-		return hwndWindow;
-	}
-	return 0;
+	return hwndRet;
 }
 
 
@@ -114,9 +107,8 @@ BOOL CGame::MousePost(HWND hWnd, DWORD x, DWORD y)
 	if (hWnd > 0)
 	{
 		y = x + y * 65536;
-		PostMessageA(hWnd, 513, 1, y);
-		PostMessageA(hWnd, 514, 0, y);
-		PostMessageA(hWnd, 515, 0, y);
+		PostMessageW(hWnd, 513, 1, y);
+		PostMessageW(hWnd, 514, 0, y);
 	}
 	return 0;
 }

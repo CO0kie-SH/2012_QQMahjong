@@ -70,6 +70,7 @@ BEGIN_MESSAGE_MAP(CStartGameDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_BUTTON3, &CStartGameDlg::OnBnClickedButton3)
 	ON_BN_CLICKED(IDC_BUTTON4, &CStartGameDlg::OnBnClickedButton4)
 	ON_BN_CLICKED(IDC_BUTTON5, &CStartGameDlg::OnBnClickedButton5)
+	ON_BN_CLICKED(IDC_BUTTON6, &CStartGameDlg::OnBnClickedButton6)
 END_MESSAGE_MAP()
 
 
@@ -189,6 +190,13 @@ void CStartGameDlg::OnBnClickedButton4()
 
 
 void CStartGameDlg::OnBnClickedButton5()
+{
+	// TODO: 在此添加控件通知处理程序代码
+	mMyStart.BtnClick(mouseStart);
+}
+
+
+void CStartGameDlg::OnBnClickedButton6()
 {
 	// TODO: 在此添加控件通知处理程序代码
 	mMyStart.BtnClick(mouseMsg);

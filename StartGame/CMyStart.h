@@ -20,6 +20,7 @@ enum EMProCtrl
 	dllStart,
 	proExit,
 	dllExit,
+	mouseStart,
 	mouseMsg
 };
 

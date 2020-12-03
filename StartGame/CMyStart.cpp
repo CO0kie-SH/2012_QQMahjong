@@ -65,11 +65,17 @@ int CMyStart::BtnClick(int index)
 		}
 		g_hHOOK = 0;
 	}
-	else if (index == mouseMsg)
+	else if (index == mouseStart && this->_INFO.wMain > 0)
 	{
-		AttachThreadInput(GetCurrentThreadId(), this->_INFO.TID, TRUE);
-		_Game->MousePost(this->_INFO.wMain, 666, 528);
-		AttachThreadInput(GetCurrentThreadId(), this->_INFO.TID, FALSE);
+		//isWind = AttachThreadInput(GetCurrentThreadId(), this->_INFO.TID, TRUE);
+		DWORD pos = 666 + 533 * 65536;
+		PostMessageW(this->_INFO.wMain, 513, 1, pos);
+		PostMessageW(this->_INFO.wMain, 514, 0, pos);
+		//AttachThreadInput(GetCurrentThreadId(), this->_INFO.TID, FALSE);
+	}
+	else if (index == mouseMsg && this->_INFO.wMain > 0)
+	{
+		_Game->MousePost(this->_INFO.wMain, 31 * 3, 180 + 30 * 6);
 	}
 	return 0;
 }
@@ -110,6 +116,7 @@ BOOL CMyStart::CreatGame(int Num /*= 0*/)
 			pi.dwProcessId,	//DWORD		PID;
 			pi.hProcess		//HANDLE	hPro;
 		};
+		AttachThreadInput(GetCurrentThreadId(), this->_INFO.TID, TRUE);
 	}
 	else if (Num <= 50)
 	{
