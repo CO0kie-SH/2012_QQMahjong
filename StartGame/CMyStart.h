@@ -57,5 +57,6 @@ private:
 
 	HMODULE _DLLMOD;
 	CGame* _Game;
+	BYTE _buff[260];
 };
 

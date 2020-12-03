@@ -75,6 +75,9 @@ int CMyStart::BtnClick(int index)
 	}
 	else if (index == mouseMsg && this->_INFO.wMain > 0)
 	{
+		ZeroMemory(_buff, 260);
+		SIZE_T size;
+		ReadProcessMemory(this->_INFO.hPro, (LPVOID)0x19BB34, _buff, 260, &size);
 		_Game->MousePost(this->_INFO.wMain, 31 * 3, 180 + 30 * 6);
 	}
 	return 0;
