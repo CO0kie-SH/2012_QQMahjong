@@ -69,6 +69,7 @@ BEGIN_MESSAGE_MAP(CStartGameDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_BUTTON2, &CStartGameDlg::OnBnClickedButton2)
 	ON_BN_CLICKED(IDC_BUTTON3, &CStartGameDlg::OnBnClickedButton3)
 	ON_BN_CLICKED(IDC_BUTTON4, &CStartGameDlg::OnBnClickedButton4)
+	ON_BN_CLICKED(IDC_BUTTON5, &CStartGameDlg::OnBnClickedButton5)
 END_MESSAGE_MAP()
 
 
@@ -104,7 +105,7 @@ BOOL CStartGameDlg::OnInitDialog()
 	SetIcon(m_hIcon, FALSE);		// 设置小图标
 
 	// TODO: 在此添加额外的初始化代码
-
+	mMyStart.InitCMyStart(GetModuleHandle(0));
 	return TRUE;  // 除非将焦点设置到控件，否则返回 TRUE
 }
 
@@ -184,4 +185,11 @@ void CStartGameDlg::OnBnClickedButton4()
 {
 	// TODO: 在此添加控件通知处理程序代码 注入卸载
 	mMyStart.BtnClick(dllExit);
+}
+
+
+void CStartGameDlg::OnBnClickedButton5()
+{
+	// TODO: 在此添加控件通知处理程序代码
+	mMyStart.BtnClick(mouseMsg);
 }

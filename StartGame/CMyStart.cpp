@@ -1,52 +1,81 @@
 #include "pch.h"
 #include "CMyStart.h"
 
-
-
-
-int GetHwndText(HWND hWnd, CStringW& str)
-{
-	int len = GetWindowTextLengthW(hWnd) + 1;
-	WCHAR* buff = new WCHAR[len];
-	len = GetWindowTextW(hWnd, buff, len);
-	str = buff;
+LRESULT CALLBACK
+MYLowLevelKeyboardProc(
+	_In_ int    nCode,	//挂钩过程用来确定如何处理消息的代码。
+	_In_ WPARAM wParam,	//键盘消息的标识符。
+	//此参数可以是以下消息之一：WM_KEYDOWN，WM_KEYUP，WM_SYSKEYDOWN或WM_SYSKEYUP。
+	_In_ LPARAM lParam) {	//指向KBDLLHOOKSTRUCT结构的指针。
+	WCHAR* buff = new WCHAR[200];
+	wsprintfW(buff, L"消息=%d，wP=%d，lP=%d\n", nCode, wParam, lParam);
+	OutputDebugStringW(buff);
 	delete[] buff;
-	str += L"\n";
-	return len;
+	return CallNextHookEx(0, nCode, wParam, lParam);
 }
 
-int GetHwndClass(HWND hWnd, CStringW& str)
-{
-	int ret = 0;
-	WCHAR buff[MAX_PATH];
-	ret = GetClassNameW(hWnd, buff, MAX_PATH);
-	str += buff;
-	str += L"\n";
-	return ret;
-}
+
 #pragma region 类内函数
 int CMyStart::BtnClick(int index)
 {
+	//每次进入时，检查窗口是否正常
+	BOOL isWind = IsWindow(this->_INFO.wMain);
+	if (this->_INFO.wMain > 0 && isWind == 0)
+	{
+		CloseHandle(this->_INFO.hPro);
+		ZeroMemory(&this->_INFO, sizeof(this->_INFO));
+	}
+	
 	if (index == proStart)
 	{
-		OutputDebugStringA("proStart\n");
+		OutputDebugStringA("pro开启\n");
+		if (isWind)
+		{
+			BtnClick(proExit);
+		}
 		CreatGame();
 	}
 	else if (index == proExit)
 	{
-		OutputDebugStringA("proExit\n");
+		OutputDebugStringA("pro退出\n");
+		if (isWind)
+		{
+			TerminateProcess(this->_INFO.hPro, 0);
+			CloseHandle(this->_INFO.hPro);
+			ZeroMemory(&this->_INFO, sizeof(this->_INFO));
+		}
 	}
 	else if (index == dllStart)
 	{
-		OutputDebugStringA("dllStart\n");
+		OutputDebugStringA("dll注入\n");
+		if (!isWind)
+			MessageBoxA(0, "请先开启游戏", 0, 0);
+		else if(g_hHOOK!=0)
+			MessageBoxA(0, "请先卸载注入", 0, 0);
+		else
+			g_hHOOK = (HHOOK)DLLGAME_HOOK(this->_INFO.TID);
 	}
 	else if (index == dllExit)
 	{
-		OutputDebugStringA("dllExit\n");
+		OutputDebugStringA("dll卸载\n");
+		if (g_hHOOK)
+		{
+			isWind = UnhookWindowsHookEx(g_hHOOK);
+			OutputDebugStringA(isWind ? "卸载成功" : "卸载失败");
+		}
+		g_hHOOK = 0;
+	}
+	else if (index == mouseMsg)
+	{
+		_Game->MousePost(this->_INFO.wMain, 666, 528);
 	}
 	return 0;
 }
 
+
+/*	函数：启动游戏
+	作者：CO0kie丶
+*/
 BOOL CMyStart::CreatGame(int Num /*= 0*/)
 {
 	STARTUPINFOW si = { sizeof(STARTUPINFOW) };//启动信息
@@ -68,7 +97,7 @@ BOOL CMyStart::CreatGame(int Num /*= 0*/)
 		printf_s("CreateProcess failed (%d).\n", GetLastError());
 		return false;
 	}
-	HWND retHwnd = CheckGame(pi.dwThreadId, pi.dwProcessId, 500);
+	HWND retHwnd = _Game->CheckGame(pi.dwThreadId, pi.dwProcessId, 500);
 	if (retHwnd > 0)
 	{
 		//成功开启游戏
@@ -80,12 +109,16 @@ BOOL CMyStart::CreatGame(int Num /*= 0*/)
 			pi.hProcess		//HANDLE	hPro;
 		};
 	}
-	else if (Num < 50)
+	else if (Num <= 50)
 	{
 		//失败则重启游戏
 		TerminateProcess(pi.hProcess, 0);
 		CloseHandle(pi.hProcess); CloseHandle(pi.hThread);
 		CreatGame(Num + 1);
+	}
+	else if (Num > 50)
+	{
+		MessageBoxW(0, L"启动游戏失败，请重试", 0, 0);
 	}
 
 	/* 旧方法 */
@@ -114,60 +147,35 @@ BOOL CMyStart::CreatGame(int Num /*= 0*/)
 }
 
 
-/*	函数：循环窗口，判断游戏是否成功开启
-	作者：特招
-	链接：https://blog.csdn.net/dgyanyong/article/details/52994204
-	优化：CO0kie丶
+/*	函数：开始键盘钩子(作废)
+	作者：CO0kie丶
 */
-HWND CMyStart::CheckGame(DWORD TID, DWORD PID, DWORD TimeOut /*= 1000*/)
+BOOL CMyStart::BeginHook()
 {
-	ULONGLONG oldTime = GetTickCount64(), newTime;
-	Sleep(88);
-	WCHAR buff[MAX_PATH];
-	HWND hwndRet = NULL, hwndWindow = NULL;
-	DWORD dwPid;
-	CStringW str;
-	do {
-		Sleep(15);
-		newTime = GetTickCount64();
-		if (0 == (hwndWindow = ::GetTopWindow(0)))
-			break;
-		do
-		{
-			// 通过窗口句柄取得进程ID
-			DWORD dwTheardID = ::GetWindowThreadProcessId(hwndWindow, &dwPid);
-			if (dwTheardID == TID)
-			{
-				GetClassNameW(hwndWindow, buff, MAX_PATH);
-				if (wcscmp(buff, L"#32770"))
-					break;
-				str.Format(L"TID %lu==%lu\tPID %lu==%lu\t%lu\t%s\t",
-					TID, dwTheardID, PID, dwPid, (DWORD)hwndWindow, buff);
-				GetWindowTextW(hwndWindow, buff, MAX_PATH);
+	/*	//函数原型：WINUSERAPI	HHOOK	WINAPI
+SetWindowsHookExW(
+	_In_ int idHook,			//钩子类型
+	_In_ HOOKPROC lpfn,			//回调函数
+	_In_opt_ HINSTANCE hmod,	//调用模块句柄
+	_In_ DWORD dwThreadId);		//需要钩的线程，为0则全部
+*/
 
-				//判断错误窗口
-				if (wcscmp(buff, L"程序错误") == 0)
-					return FALSE;
 
-				//打印信息
-				str.AppendFormat(L"%s\n", buff);
-				OutputDebugStringW(str);
-				hwndRet = hwndWindow;
-			}
-			// 取得下一个窗口句柄
-		} while (hwndWindow = ::GetNextWindow(hwndWindow, GW_HWNDNEXT));
-	} while (newTime - oldTime < TimeOut);
-
-	if (hwndRet > 0)
-		return hwndRet;
-	else if (hwndWindow > 0)
-	{
-		while (HWND tmp = ::GetParent(hwndWindow))
-		{
-			hwndWindow = tmp;
-		}
-		return hwndWindow;
-	}
+	/*	//函数原型：LRESULT CALLBACK
+LowLevelKeyboardProc(
+  _In_ int    nCode,	//挂钩过程用来确定如何处理消息的代码。
+  _In_ WPARAM wParam,	//键盘消息的标识符。
+  //此参数可以是以下消息之一：WM_KEYDOWN，WM_KEYUP，WM_SYSKEYDOWN或WM_SYSKEYUP。
+  _In_ LPARAM lParam);	//指向KBDLLHOOKSTRUCT结构的指针。
+ */
+	
+	//HHOOK hHook = SetWindowsHookExW(WH_KEYBOARD_LL, (HOOKPROC)MYLowLevelKeyboardProc,
+	//	this->_DLLMOD, 5212);
+	//	//GetModuleHandleW(NULL), 18100);
+	//OutputDebugStringW(hHook ? L"成功\n" : L"失败\n");
+	//MessageBox(0, hHook ? L"成功" : L"失败", 0, 0);
+	//if (!hHook)return false;
+	//g_hHOOK = hHook;
 	return 0;
 }
 #pragma endregion
