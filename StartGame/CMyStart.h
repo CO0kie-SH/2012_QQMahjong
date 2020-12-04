@@ -47,6 +47,7 @@ public:
 		_Game = (CGame*)DLLGAME_Init(hMod);
 		_DLLMOD = _Game->_DLLMOD;
 		this->_thisWin = hWnd;
+		hWnd = 0;
 		hWnd = FindWindow(L"#32770", L"QQÁ¬Á¬¿´");
 		if (hWnd)
 		{

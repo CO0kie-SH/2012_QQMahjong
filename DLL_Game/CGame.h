@@ -19,6 +19,7 @@ public:
 	HMODULE _DLLMOD = 0;
 	HMODULE _MFCMOD = 0;
 private:
+	DWORD _TID = 0;
 	DWORD _PID = 0;
 	HWND _HWND = 0;
 	//CString mstr;

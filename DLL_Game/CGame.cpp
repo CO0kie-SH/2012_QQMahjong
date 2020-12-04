@@ -41,9 +41,10 @@ int DLLGAME_HOOK(int TID)
 void CGame::InitDLL(HINSTANCE hMod)
 {
 	_DLLMOD = hMod;
+	_TID = GetCurrentThreadId();
 	_PID = GetCurrentProcessId();
-	_HWND = CheckGame(0, _PID, 0);
-	gstr.Format(L"注入进程%lu，本基址%p，窗口%d", _PID, hMod, (int)_HWND);
+	_HWND = CheckGame(_TID, _PID, 0);
+	gstr.Format(L"注入TID %d,PID %d,本基址%p,窗口%d", _TID, _PID, hMod, (int)_HWND);
 	OutputDebugString(gstr);
 }
 
@@ -59,7 +60,7 @@ HWND CGame::CheckGame(DWORD TID, DWORD PID, DWORD TimeOut /*= 1000*/)
 	WCHAR buff[MAX_PATH];
 	HWND hwndRet = NULL, hwndWindow = NULL;
 	DWORD dwPid = NULL, dwTheardID = NULL;
-	CStringW str;
+	//CStringW str;
 
 	if (TimeOut)
 		Sleep(55);
@@ -77,11 +78,11 @@ HWND CGame::CheckGame(DWORD TID, DWORD PID, DWORD TimeOut /*= 1000*/)
 			if (dwTheardID == TID && dwPid == PID)
 			{
 				GetClassNameW(hwndWindow, buff, MAX_PATH);
-				str.Format(L"句柄 %d\tTID %d==%d,PID %d==%d %s\t",
-					(int)hwndWindow, TID, dwTheardID, PID, dwPid, buff);
+				//str.Format(L"句柄 %d\tTID %d==%d,PID %d==%d %s\t",
+				//	(int)hwndWindow, TID, dwTheardID, PID, dwPid, buff);
 				GetWindowTextW(hwndWindow, buff, MAX_PATH);
-				str.AppendFormat(L"%s\n", buff);
-				OutputDebugStringW(str);
+				//str.AppendFormat(L"%s\n", buff);
+				//OutputDebugStringW(str);
 
 
 				if (wcscmp(buff, L"程序错误") == 0)
