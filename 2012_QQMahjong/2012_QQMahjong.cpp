@@ -39,8 +39,9 @@ static void showBy(byte& buf)
 	case 0x18:	printf("折");	break;
 	case 0x19:	printf("钟");	break;
 	case 0xF2:	printf("禁");	break;
-	case 0xF3:	printf("炸");	break;
+	case 0xF3:	printf("闹");	break;
 	case 0xF4:	printf("炸");	break;
+	case 0xF6:	printf("门");	break;
 	case 0xF7:	printf("障");	break;
 	default:	printf("%02X", buf);	break;
 	}
@@ -57,6 +58,11 @@ byte show(char* map, int x, int y, bool isPr = false)
 
 void showMap(char* map)
 {
+	for (DWORD i = 1; i <= 19; i++)
+	{
+		printf("%2d", i);
+	}
+	printf("\n");
 	for (DWORD y = 1, add = 0; y <= 11; y++)
 	{
 		for (DWORD x = 1; x <= 19; x++)
@@ -68,52 +74,6 @@ void showMap(char* map)
 	}
 }
 
-int clear1(char* map)
-{
-	for (byte y = 1, buf = 0; y <= 11; y++)
-	{
-		for (byte x = 1; x <= 19; x++)
-		{
-			if ((buf = show(map, x, y)) == 0x00)
-				continue;
-			//printf("开始检查(%d,%d)\t", x, y);
-			//showBy(buf);
-
-
-			//向右搜索
-			byte xmm = x, xpp = x, ymm = y, ypp = y, tmp = 0;
-			while (++xpp <= 19)
-			{
-				tmp = show(map, xpp, y);
-				if (tmp == buf)
-				{
-					printf("找到横向，(%d,%d)%X---(%d,%d)%X\n", x, y, buf, xpp, y, buf);
-					map[(y - 1) * 19 + (x - 1)] = 0x00;
-					map[(y - 1) * 19 + (xpp - 1)] = 0x00;
-				}
-				else if (tmp > 0)
-					break;
-			}
-			while (++ypp<=11)
-			{
-				tmp = show(map, x, ypp);
-				if (tmp == buf)
-				{
-					printf("找到纵向，(%d,%d)%X---(%d,%d)%X\n", x, y, buf, x, ypp, buf);
-					map[(y - 1) * 19 + (x - 1)] = 0x00;
-					map[(ypp - 1) * 19 + (x - 1)] = 0x00;
-				}
-				else if (tmp > 0)
-					break;
-			}
-			//搜索结束
-		}
-	}
-	showMap(map);
-	printf("\n");
-	return 0;
-}
-
 
 typedef struct _MyStruct
 {
@@ -123,59 +83,95 @@ typedef struct _MyStruct
 	byte B;
 }MyStruct;
 
+BOOL clear1(char* map, int x1, int y1, int x2, int y2)
+{
+	if (x1 == x2)
+	{
+		printf("X相同，上下找Y：\n(%2d,%2d)A=", x1, y1);
+		int maxy = y1 > y2 ? y1 : y2,
+			y = y1 < y2 ? y1 : y2;
+		byte buf = show(map, x1, y1, true);
+		printf("B=(%2d,%2d)", x2, y2);
+		while (++y <= maxy)
+		{
+			printf("[%2d,%2d]", x1, y);
+			byte tmp = show(map, x1, y, true);
+			if (tmp == 0)
+				continue;
+			else if (tmp == buf)
+				return TRUE;
+			else{
+				puts("←上下被阻塞");
+				return FALSE;
+			}
+		}
+		return TRUE;
+	}
+	else if (y1 == y2)
+	{
+		printf("Y相同，左右找X\n(%2d,%2d)A=", x1, y1);		//X不变，左右找Y
+		byte buf = show(map, x1, y1);
+		if (buf == 0)
+			buf = show(map, x2, y2);
+		showBy(buf);
+		printf("B=(%2d,%2d)", x1, y2);
+		while (x1 != x2)
+		{
+			x1 = x1 > x2 ? x1 - 1 : x1 + 1;
+			printf("[%2d,%2d]", x1, y1);
+			byte tmp = show((char*)map, x1, y1, true);
+			if (tmp == 0)
+				continue;
+			else if (tmp == buf)
+				return TRUE;
+			else{
+				puts("←左右被阻塞");
+				return FALSE;
+			}
+		}
+		return TRUE;
+	}
+	return 0;
+}
 BOOL clear2(byte* map, MyStruct& oldMy, MyStruct& newMy)
 {
 	BOOL bret = 0, dir = 0;
 	printf("\nB=(%2d,%2d)", newMy.X, newMy.Y);
 	showBy(newMy.B);
 	printf("\t比较：");
-	if (oldMy.X == newMy.X)
-	{
-		puts("X相同，上下找Y");		//X不变，上下找Y
-		int maxy = oldMy.Y > newMy.Y ? oldMy.Y : newMy.Y,
-			y = oldMy.Y < newMy.Y ? oldMy.Y : newMy.Y;
-		while (++y <= maxy)
-		{
-			printf("[%2d,%2d]", oldMy.X, y);
-			byte tmp = show((char*)map, oldMy.X, y, true);
-			if (tmp == 0)
-				continue;
-			else if (tmp == oldMy.B)
-				return TRUE;
-			else if (tmp != oldMy.B) {
-				printf("←被阻塞");
-				return FALSE;
-			}
-		}
-		return TRUE;
-	}
-	else if (oldMy.Y == newMy.Y)
-	{
-		puts("Y相同，左右找X");		//X不变，左右找Y
-		int maxx = oldMy.X > newMy.X ? oldMy.X : newMy.X,
-			x = oldMy.X < newMy.X ? oldMy.X : newMy.X;
-		while (++x <= maxx)
-		{
-			printf("[%2d,%2d]", x, oldMy.Y);
-			byte tmp = show((char*)map, x, oldMy.Y, true);
-			if (tmp == 0)
-				continue;
-			else if (tmp == oldMy.B)
-				return TRUE;
-			else if (tmp != oldMy.B) {
-				printf("←被阻塞");
-				return FALSE;
-			}
-		}
-		return TRUE;
-	}
 
+	//如果0折，则返回成功
+	if (clear1((char*)map, oldMy.X, oldMy.Y, newMy.X, newMy.Y))
+		return TRUE;
+	else
+		printf("\t单连失败：");
 	//计算象限
 	if (newMy.X > oldMy.X)
 		dir = newMy.Y > oldMy.Y ? 4 : 1;
 	else
 		dir = newMy.Y > oldMy.Y ? 3 : 2;
-	printf("第%d象限", dir);
+	printf("第%d象限\t", dir);
+
+	if (dir == 3)
+	{
+		if (clear1((char*)map, oldMy.X, oldMy.Y, oldMy.X, newMy.Y) //↓查找，x不变
+			//clear1((char*)map, newMy.X, newMy.Y, oldMy.X, newMy.Y));//←查找，y不变
+			) {
+			printf("上下可连接，找左右\t");
+			if (clear1((char*)map, newMy.X, newMy.Y, oldMy.X, newMy.Y))//←查找，y不变)
+			{
+				printf("可连接\n");
+				return 0;
+			}
+		}
+		else if (clear1((char*)map, newMy.X, oldMy.Y, oldMy.X, oldMy.Y) //←查找，y不变
+			) {
+			//if (clear1((char*)map, newMy.X, newMy.Y, oldMy.X, newMy.Y))//←查找，y不变)
+				printf("左右可连接，找上下\t");
+		}
+	}
+	return 0;
+
 
 	//计算
 	if (dir == 5)
@@ -268,13 +264,13 @@ int clear2(char* map)
 	}
 	
 	if (pos.size()) {
-		return 0;
 		MousePostW(0, 0);
 		auto begin = pos.begin();
 		while (begin != pos.end())
 		{
 			printf("(%2d,%2d)", (*begin).X, (*begin).Y);
 			show(map, (*begin).X, (*begin).Y, true);
+			getchar();
 			MousePostW((*begin).X, (*begin).Y);
 			++begin;
 			printf("(%2d,%2d)\n", (*begin).X, (*begin).Y);
@@ -282,7 +278,6 @@ int clear2(char* map)
 			Sleep(1000);
 			MousePostW((*begin).X, (*begin).Y);
 			++begin;
-			getchar();
 		}
 	}
 	return 0;
@@ -297,8 +292,10 @@ int main()
 	setlocale(LC_ALL, "chs");
 	std::cout << "Hello World!\n";
 	CProtect cPro;
-
-	HANDLE hPro = OpenProcess(PROCESS_VM_READ, 0, 11616);
+	DWORD PID;
+	HWND hWnd = FindWindow(L"#32770", L"QQ连连看");
+	GetWindowThreadProcessId(hWnd, &PID);
+	HANDLE hPro = OpenProcess(PROCESS_VM_READ, 0, PID);
 	ReadProcessMemory(hPro, (LPVOID)0x19BB34, buff, 260, 0);
 
 	showMap(buff + 8);
@@ -315,7 +312,10 @@ int main()
 		}
 		else if (ch == '1')
 		{
-			clear1(buff + 8);
+			DWORD t = 666 + 533 * 65536;
+			PostMessageA(hWnd, 512, 2, t);
+			PostMessageA(hWnd, 513, 1, t);
+			PostMessageA(hWnd, 514, 0, t);
 		}
 		else if (ch == '2')
 		{

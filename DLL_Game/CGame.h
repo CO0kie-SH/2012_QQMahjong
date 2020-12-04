@@ -20,7 +20,7 @@ public:
 	HMODULE _MFCMOD = 0;
 private:
 	DWORD _PID = 0;
-	HWND _HWND;
+	HWND _HWND = 0;
 	//CString mstr;
 };
 

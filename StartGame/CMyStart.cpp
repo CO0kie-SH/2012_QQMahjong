@@ -54,6 +54,8 @@ int CMyStart::BtnClick(int index)
 			MessageBoxA(0, "请先卸载注入", 0, 0);
 		else
 			g_hHOOK = (HHOOK)DLLGAME_HOOK(this->_INFO.TID);
+		if(g_hHOOK)
+			MessageBoxA(0, "注入成功", 0, 0);
 	}
 	else if (index == dllExit)
 	{

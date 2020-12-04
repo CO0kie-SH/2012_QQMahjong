@@ -42,16 +42,29 @@ static HHOOK g_hHOOK = 0;
 class CMyStart
 {
 public:
-	void InitCMyStart(HMODULE hMod)
+	void InitCMyStart(HMODULE hMod,HWND hWnd)
 	{
 		_Game = (CGame*)DLLGAME_Init(hMod);
 		_DLLMOD = _Game->_DLLMOD;
+		this->_thisWin = hWnd;
+		hWnd = FindWindow(L"#32770", L"QQÁ¬Á¬¿´");
+		if (hWnd)
+		{
+			_INFO.wMain = hWnd;
+			_INFO.TID = GetWindowThreadProcessId(hWnd, &_INFO.PID);
+			_INFO.hPro = OpenProcess(PROCESS_VM_READ, 0, _INFO.PID);
+			CStringW str;
+			str.Format(L"TID %d,PID %d,HWND %d,hPro %d",
+				_INFO.TID, _INFO.PID, (int)_INFO.wMain, (int)_INFO.hPro);
+			OutputDebugStringW(str);
+		}
 	}
 
 	BOOL BtnClick(int index);
 	BOOL CreatGame(int Num = 0);
 	BOOL BeginHook();
 private:
+	HWND _thisWin;
 	WCHAR _path[MAX_PATH] = szPATH;
 	GameInfo _INFO;
 
