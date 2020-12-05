@@ -64,4 +64,5 @@ void CMyDlg::OnBnClickedButton3()
 void CMyDlg::OnBnClickedButton4()
 {
 	// TODO: 在此添加控件通知处理程序代码
+	g_CGame.CLLK.KeyDown(VK_F11, g_CGame.wMain);
 }

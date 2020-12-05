@@ -109,7 +109,9 @@ BOOL CStartGameDlg::OnInitDialog()
 	SetIcon(m_hIcon, FALSE);		// 设置小图标
 
 	// TODO: 在此添加额外的初始化代码
-	mMyStart.InitCMyStart(GetModuleHandle(0), this->GetSafeHwnd());
+	CEdit* edt = (CEdit*)this->GetDlgItem(IDC_EDIT1);
+	edt->SetWindowTextW(szPATH);
+	mMyStart.InitCMyStart(edt, GetModuleHandle(0), this->GetSafeHwnd());
 	return TRUE;  // 除非将焦点设置到控件，否则返回 TRUE
 }
 
@@ -167,6 +169,7 @@ HCURSOR CStartGameDlg::OnQueryDragIcon()
 void CStartGameDlg::OnBnClickedButton1()
 {
 	// TODO: 在此添加控件通知处理程序代码 普通启动
+	mMyStart.SetPath((CEdit*)this->GetDlgItem(IDC_EDIT1));
 	mMyStart.BtnClick(proStart);
 }
 

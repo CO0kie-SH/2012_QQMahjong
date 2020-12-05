@@ -2,7 +2,7 @@
 #include "CGame.h"
 
 CGame g_CGame;
-DWORD g_this = 0, * g_nums = 0;
+DWORD g_this = 0, g_clean = 0, * g_nums = 0;
 char* g_map = 0;
 CString gstr;
 
@@ -42,6 +42,51 @@ LRESULT CALLBACK KeyboardProcMy(
 	{
 		gstr.AppendFormat(L" F12_UP,开局%X", g_this);
 		g_CGame.MousePost(g_CGame.wMain, 666, 533);
+	}
+	if (nCode == 0 && wParam == VK_F11 && key.nowDOWN && g_map)
+	{
+		gstr.AppendFormat(L" F11_UP,全删%X", g_this);
+		while (*g_nums)
+		{
+			DWORD count = *g_nums / 2, i = 0;
+			for (; i < count; i++)
+			{
+				_asm
+				{
+					MOV ECX, g_this;
+					PUSH 0XF4;
+					PUSH 0;
+					PUSH 0;
+					MOV EAX, 0x41E691;
+					CALL EAX;
+				}
+			}
+			if (*g_nums) //需要重置地图
+			{
+				_asm
+				{
+					MOV ECX, g_this;
+					PUSH 0XF1;		//F1换地图,F2禁手
+					PUSH 0;
+					PUSH 0;
+					MOV EAX, 0x41E691;
+					CALL EAX;
+				}
+			}
+		}
+		
+		//POINT x = {0};
+		//POINT y = {0};
+		//_asm
+		//{
+		//	mov ECX, g_clean;
+		//	lea eax, x;
+		//	push eax;
+		//	lea eax, y;
+		//	push eax;
+		//	mov eax, 0x42923F;
+		//	call eax;			
+		//}
 	}
 	else if (nCode==0 && key.oldDOWN && key.nowDOWN && g_map)
 	{
@@ -192,8 +237,11 @@ void CLLK::InitLLK()
 	g_this = map[3] - 0x14C8;
 	g_nums = (LPDWORD)(map[3] + 0x39CC);
 
+	DWORD map2[2] = { 0x45DCF8 ,0x1E84 };
+	g_clean = this->ReadProcessINT(map, 2);
+
 	//打印数据
-	gstr.Format(L"地图指针0x%p this指针%08X=%d", mmap, g_this, g_this);
+	gstr.Format(L"地图指针0x%p this指针%08X 查询this %08X", mmap, g_this, g_clean);
 	OutputDebugStringW(gstr);
 }
 

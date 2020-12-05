@@ -2,7 +2,7 @@
 #define szPATH L"E:\\qq连连看单机版2\\kyodai.exe"
 
 #include "..\DLL_Game\CGame.h"
-#pragma comment(lib,"..\\Debug\\DLL_Game.lib")
+#pragma comment(lib,"..\\Release\\DLL_Game.lib")
 
 //定义连连看进程结构
 typedef struct _GameInfo
@@ -32,8 +32,9 @@ static HHOOK g_hHOOK = 0;
 class CMyStart
 {
 public:
-	void InitCMyStart(HMODULE hMod,HWND hWnd)
+	void InitCMyStart(CEdit* cedt, HMODULE hMod, HWND hWnd)
 	{
+		cedt->GetWindowTextW(this->_path, MAX_PATH);
 		_Game = (CGame*)DLLGAME_Init(hMod);
 		_DLLMOD = _Game->_DLLMOD;
 		this->_thisWin = hWnd;
@@ -51,6 +52,10 @@ public:
 			OutputDebugStringW(str);
 		}
 	}
+	void SetPath(CEdit* cedt)
+	{
+		cedt->GetWindowTextW(this->_path, MAX_PATH);
+	}
 
 
 	HWND CheckGame(DWORD TID, DWORD PID, DWORD TimeOut = 1000);
@@ -58,7 +63,7 @@ public:
 	BOOL CreatGame(int Num = 0);
 private:
 	HWND _thisWin;
-	WCHAR _path[MAX_PATH] = szPATH;
+	WCHAR _path[MAX_PATH];
 	GameInfo _INFO;
 
 	HMODULE _DLLMOD;

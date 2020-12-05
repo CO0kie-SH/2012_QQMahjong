@@ -72,6 +72,7 @@ int CMyStart::BtnClick(int index)
 	if (index == proStart)
 	{
 		OutputDebugStringA("pro¿ªÆô\n");
+		OutputDebugStringW(this->_path);
 		if (isWind)	//ÖØ¸´¿ªÆô
 			BtnClick(proExit);
 		CreatGame();
