@@ -184,6 +184,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="CGame.cpp" />
+    <ClCompile Include="CMyDlg.cpp" />
     <ClCompile Include="DLL_Game.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
@@ -199,6 +200,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CGame.h" />
+    <ClInclude Include="CMyDlg.h" />
     <ClInclude Include="DLL_Game.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="pch.h" />

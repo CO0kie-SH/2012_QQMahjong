@@ -31,6 +31,8 @@ public:
 // 实现
 protected:
 	DECLARE_MESSAGE_MAP()
+public:
+	afx_msg void OnClose();
 };
 
 CAboutDlg::CAboutDlg() : CDialogEx(IDD_ABOUTBOX)
@@ -43,6 +45,7 @@ void CAboutDlg::DoDataExchange(CDataExchange* pDX)
 }
 
 BEGIN_MESSAGE_MAP(CAboutDlg, CDialogEx)
+	ON_WM_CLOSE()
 END_MESSAGE_MAP()
 
 
@@ -200,4 +203,12 @@ void CStartGameDlg::OnBnClickedButton6()
 {
 	// TODO: 在此添加控件通知处理程序代码
 	mMyStart.BtnClick(mouseMsg);
+}
+
+
+void CAboutDlg::OnClose()
+{
+	// TODO: 在此添加消息处理程序代码和/或调用默认值
+
+	CDialogEx::OnClose();
 }

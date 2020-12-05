@@ -9,5 +9,9 @@
 
 // 添加要在此处预编译的标头
 #include "framework.h"
+#include "CMyDlg.h"
+#define WM_DATA1 WM_USER+1
+#define WM_DATA2 WM_USER+2
+#define WM_DATA3 WM_USER+3
 
 #endif //PCH_H

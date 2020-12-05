@@ -24,6 +24,9 @@
     <ClCompile Include="CGame.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="CMyDlg.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="DLL_Game.def">
@@ -51,6 +54,9 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="CGame.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="CMyDlg.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

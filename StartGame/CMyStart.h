@@ -25,18 +25,8 @@ enum EMProCtrl
 };
 
 
-//定义键盘钩子回调函数
-LRESULT CALLBACK
-MYLowLevelKeyboardProc(
-	_In_ int    nCode,	//挂钩过程用来确定如何处理消息的代码。
-	_In_ WPARAM wParam,	//键盘消息的标识符。
-	//此参数可以是以下消息之一：WM_KEYDOWN，WM_KEYUP，WM_SYSKEYDOWN或WM_SYSKEYUP。
-	_In_ LPARAM lParam);	//指向KBDLLHOOKSTRUCT结构的指针。
-
-
 //定义全局钩子句柄，用于卸载钩子
 static HHOOK g_hHOOK = 0;
-
 
 
 class CMyStart
@@ -48,22 +38,24 @@ public:
 		_DLLMOD = _Game->_DLLMOD;
 		this->_thisWin = hWnd;
 		hWnd = 0;
-		hWnd = FindWindow(L"#32770", L"QQ连连看");
+		hWnd = FindWindowA("#32770", "QQ连连看");
 		if (hWnd)
 		{
 			_INFO.wMain = hWnd;
 			_INFO.TID = GetWindowThreadProcessId(hWnd, &_INFO.PID);
 			_INFO.hPro = OpenProcess(PROCESS_VM_READ, 0, _INFO.PID);
 			CStringW str;
-			str.Format(L"TID %d,PID %d,HWND %d,hPro %d",
-				_INFO.TID, _INFO.PID, (int)_INFO.wMain, (int)_INFO.hPro);
+			str.Format(L"TID %d,PID %d,HWND %d,hPro %d,远程连接%d",
+				_INFO.TID, _INFO.PID, (int)_INFO.wMain, (int)_INFO.hPro,
+				AttachThreadInput(GetCurrentThreadId(), this->_INFO.TID, TRUE));
 			OutputDebugStringW(str);
 		}
 	}
 
+
+	HWND CheckGame(DWORD TID, DWORD PID, DWORD TimeOut = 1000);
 	BOOL BtnClick(int index);
 	BOOL CreatGame(int Num = 0);
-	BOOL BeginHook();
 private:
 	HWND _thisWin;
 	WCHAR _path[MAX_PATH] = szPATH;

@@ -60,6 +60,6 @@ BOOL CDLLGameApp::InitInstance()
 {
 	CWinApp::InitInstance();
 	//TRACE(_T("App handle is 0x%0X\n"), AfxGetInstanceHandle());
-	g_CGame.InitDLL(AfxGetInstanceHandle());
+	g_CGame.InitDLL(AfxGetInstanceHandle(), AfxGetMainWnd()->GetSafeHwnd());
 	return TRUE;
 }
